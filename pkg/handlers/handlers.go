@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/jamshu/bookings/internal/forms"
 	"github.com/jamshu/bookings/pkg/config"
 	"github.com/jamshu/bookings/pkg/models"
 	"github.com/jamshu/bookings/pkg/render"
@@ -57,7 +58,14 @@ func (m *Repository) About(w http.ResponseWriter, r *http.Request) {
 
 // Reservation renders the make a reservation page and displays form
 func (m *Repository) Reservation(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplate(w, r, "make-reservation.page.tmpl", &models.TemplateData{})
+	render.RenderTemplate(w, r, "make-reservation.page.tmpl", &models.TemplateData{
+		Form: forms.New(nil),
+	})
+}
+
+// PostReservation post the reservation
+func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("Posted the make reservation page"))
 }
 
 // Generals renders the room page
@@ -80,7 +88,7 @@ func (m *Repository) PostAvailability(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	start := r.Form.Get("start")
 	end := r.Form.Get("end")
-	log.Println("post form form data,in post availabitilyt",r.Form)
+	log.Println("post form form data,in post availabitilyt", r.Form)
 
 	w.Write([]byte(fmt.Sprintf("start date %s and end date %s", start, end)))
 }
@@ -94,7 +102,7 @@ type jsonResponse struct {
 func (m *Repository) AvailabilityJson(w http.ResponseWriter, r *http.Request) {
 
 	data, _ := ioutil.ReadAll(r.Body)
-	log.Println("Json availablitiy",data)
+	log.Println("Json availablitiy", data)
 	resp := jsonResponse{
 		OK:      true,
 		Message: "Available",
