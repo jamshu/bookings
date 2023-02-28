@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -81,6 +82,23 @@ func (m *Repository) PostAvailability(w http.ResponseWriter, r *http.Request) {
 	log.Println(r.Form)
 	
 	w.Write([]byte(fmt.Sprintf("start date %s and end date %s",start,end)))
+}
+
+type jsonResponse struct {
+	OK bool `json:"ok"`
+	Message string `json:"message"`
+}
+// PostAvailability renders the search availability page
+func (m *Repository) AvailabilityJson(w http.ResponseWriter, r *http.Request) {
+	
+	resp := jsonResponse{
+		OK:true,
+		Message: "Available",
+	}
+	out,_ :=json.MarshalIndent(resp,"","     ")
+	log.Println(string(out))
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(out)
 }
 
 // Contact renders the contact page
