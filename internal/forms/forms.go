@@ -19,6 +19,14 @@ func New(data url.Values) *Form {
 
 func(f *Form) Has(field string,request *http.Request) bool {
 	x := request.Form.Get(field)
-	return x != ""
+	if x == "" {
+		f.Errors.Add(field,"This field is required")
+		return false
+	}
+	return true
 
+}
+
+func(f *Form) Valid() bool {
+	return len(f.Errors) == 0
 }
